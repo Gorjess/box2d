@@ -93,10 +93,9 @@ public:
 			break;
 		case move_state::ems_right:
 			pos.x += 0.5f;
-			break;
-		default:
-			stop_paddle();
-			break;
+			break;		
+		case move_state::ems_idle:
+			stop_paddle();			
 		}
 		paddle_->SetTransform(pos, paddle_->GetAngle());		
 		
