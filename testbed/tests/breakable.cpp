@@ -120,20 +120,20 @@ public:
 	}
 
 	void Step(Settings& settings) override
-	{
-		if (m_break)
-		{
-			Break();
-			m_broke = true;
-			m_break = false;
-		}
+	{		
+		//if (m_break)
+		//{
+		//	Break();
+		//	m_broke = true;
+		//	m_break = false;
+		//}
 
-		// Cache velocities to improve movement on breakage.
-		if (m_broke == false)
-		{
-			m_velocity = m_body1->GetLinearVelocity();
-			m_angularVelocity = m_body1->GetAngularVelocity();
-		}
+		//// Cache velocities to improve movement on breakage.
+		//if (m_broke == false)
+		//{
+		//	m_velocity = m_body1->GetLinearVelocity();
+		//	m_angularVelocity = m_body1->GetAngularVelocity();
+		//}
 
 		Test::Step(settings);
 	}
