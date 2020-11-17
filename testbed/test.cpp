@@ -67,7 +67,7 @@ Test::~Test()
 {
 	// By deleting the world, we delete the bomb, mouse joint, etc.
 	delete m_world;
-	m_world = NULL;
+	m_world = nullptr;
 }
 
 void Test::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)

@@ -1,70 +1,77 @@
 #include "test.h"
 #include <memory>
+#include <iostream>
 
-class foo {
-public:
-	foo()=delete;
-
-	foo(const float a, const float b) : a_(a), b_(b)
-	{
-		printf("a:%.2f, b:%.2f", this->a_, this->b_);
-	}
-
-private:
-	float a_;
-	float b_;
-};
 
 class hello_world final: public Test {
-	
+
 public:
 	hello_world()
 	{							
 		// ground box
-		b2BodyDef ground_body_def;		
-		ground_body_def.position.Set(0.0f, -10.0f);
-		auto *ground_body = m_world->CreateBody(&ground_body_def);
-		b2PolygonShape ground_box;
-		ground_box.SetAsBox(50.0f, 10.0f);
-		ground_body->CreateFixture(&ground_box, 0.0f);
+		{			
+			b2BodyDef bd;
+			bd.position.Set(0.0f, -10.0f);
+			ground_body_ = m_world->CreateBody(&bd);
+
+			b2PolygonShape ground_box;
+			ground_box.SetAsBox(50.0f, 10.0f);
+			ground_body_->CreateFixture(&ground_box, 0.0f);
+		}		
 
 		// dynamic body
-		b2BodyDef body_def;
-		body_def.type = b2_dynamicBody;
-		body_def.position.Set(0.0f, 40.0f);
-		auto *dy_body = m_world->CreateBody(&body_def);
+		{
+			b2BodyDef bd;
+			bd.type = b2_dynamicBody;
+			bd.position.Set(0.0f, 10.0f);
+			bd.angle = 10.0f;
+			ball_ = m_world->CreateBody(&bd);
 
-		// shape rectangle
-		b2PolygonShape dynamic_box;
-		dynamic_box.SetAsBox(4.0f, 1.0f);
+			b2PolygonShape ball_box;
+			ball_box.SetAsBox(4.0f, 1.0f);
 
-		// shape circle
-		b2CircleShape circle;
-		circle.m_radius = 1.0f;
-		
-		b2FixtureDef fixture_def;
-		// fixture_def.shape = &dynamic_box;
-		fixture_def.shape = &circle;
-		fixture_def.density = 1.0f;
-		fixture_def.friction = 0.3f;
-		dy_body->CreateFixture(&fixture_def);
+			b2CircleShape circle;
+			circle.m_radius = 1.5f;
 
-		//// simulate
-		//auto time_step = 1.0f / 60.0f;
-		//auto velocity_iteration = 6;
-		//auto position_iteration = 2;
+			b2FixtureDef fd;
+			fd.shape = &circle;
+			fd.density = 1.0f;
+			fd.friction = 0.4f;
+			ball_->CreateFixture(&fd);
+		}							
+	}
 
-		//for (auto i=1; i < 60; ++i)
-		//{
-		//	m_world->Step(time_step, velocity_iteration, position_iteration);
-		//	auto position = dy_body->GetPosition();
-		//	auto angle = dy_body->GetAngle();
-		//	printf("%4.2f %4.2f %4.2f\n", position.x, position.y, angle);
-		//}
+	void Keyboard(const int key) override
+	{
+		switch (key)
+		{
+		case GLFW_KEY_A:
+			this->mv_state_ = move_state::ems_left;
+			break;
+		case GLFW_KEY_D:
+			this->mv_state_ = move_state::ems_right;
+			break;
+		default:
+			this->mv_state_ = move_state::ems_idle;
+		}
 	}
 
 	void Step(Settings& settings) override
-	{
+	{		
+		b2Vec2 pos = ball_->GetPosition();		
+		switch (mv_state_)
+		{
+		case move_state::ems_left:
+			pos.x -= 0.5f;
+			break;
+		case move_state::ems_right:
+			pos.x += 0.5f;
+			break;
+		default:			
+			break;
+		}
+		ball_->SetTransform(pos, ball_->GetAngle());
+		
 		Test::Step(settings);
 	}
 
@@ -72,6 +79,19 @@ public:
 	{
 		return new hello_world;
 	}
+
+private:
+	enum class move_state
+	{
+		ems_idle,
+		ems_left,
+		ems_right
+	};
+	move_state mv_state_ = move_state::ems_idle;
+
+	b2Body* ground_body_;
+	b2Body* ball_;
+	b2Body* paddle_;
 };
 
 static int test_index = RegisterTest("Testbed", "hello_world", hello_world::Create);

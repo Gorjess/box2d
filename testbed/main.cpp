@@ -513,7 +513,7 @@ int main(int, char**)
 
 	sprintf(buffer, "Box2D Testbed Version %d.%d.%d", b2_version.major, b2_version.minor, b2_version.revision);
 
-	bool fullscreen = false;
+	const bool fullscreen = false;
 	if (fullscreen)
 	{
 		g_mainWindow = glfwCreateWindow(1920, 1080, buffer, glfwGetPrimaryMonitor(), NULL);
@@ -523,7 +523,7 @@ int main(int, char**)
 		g_mainWindow = glfwCreateWindow(g_camera.m_width, g_camera.m_height, buffer, NULL, NULL);
 	}
 
-	if (g_mainWindow == NULL)
+	if (g_mainWindow == nullptr)
 	{
 		fprintf(stderr, "Failed to open GLFW g_mainWindow.\n");
 		glfwTerminate();
@@ -533,7 +533,7 @@ int main(int, char**)
 	glfwMakeContextCurrent(g_mainWindow);
 
 	// Load OpenGL functions using glad
-	int version = gladLoadGL(glfwGetProcAddress);
+	const int version = gladLoadGL(glfwGetProcAddress);
 	printf("GL %d.%d\n", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
 	printf("OpenGL %s, GLSL %s\n", glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
 

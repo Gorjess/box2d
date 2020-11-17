@@ -30,7 +30,7 @@ public:
 	{		
 		m_speed = 50.0f;
 
-		b2Body* ground = NULL;
+		b2Body* ground = nullptr;
 		{
 			b2BodyDef bd;
 			ground = m_world->CreateBody(&bd);
@@ -49,18 +49,16 @@ public:
 
 			float x = 20.0f, y1 = 0.0f, dx = 5.0f;
 
-			for (int32 i = 0; i < 10; ++i)
+			for (float y2 : hs)
 			{
-				float y2 = hs[i];
 				shape.SetTwoSided(b2Vec2(x, y1), b2Vec2(x + dx, y2));
 				ground->CreateFixture(&fd);
 				y1 = y2;
 				x += dx;
 			}
 
-			for (int32 i = 0; i < 10; ++i)
+			for (float y2 : hs)
 			{
-				float y2 = hs[i];
 				shape.SetTwoSided(b2Vec2(x, y1), b2Vec2(x + dx, y2));
 				ground->CreateFixture(&fd);
 				y1 = y2;
@@ -147,7 +145,7 @@ public:
 			b2PolygonShape box;
 			box.SetAsBox(0.5f, 0.5f);
 
-			b2Body* body = NULL;
+			b2Body* body = nullptr;
 			b2BodyDef bd;
 			bd.type = b2_dynamicBody;
 
@@ -225,7 +223,7 @@ public:
 			jd.lowerTranslation = -0.25f;
 			jd.upperTranslation = 0.25f;
 			jd.enableLimit = true;
-			m_spring1 = (b2WheelJoint*)m_world->CreateJoint(&jd);
+			m_spring1 = dynamic_cast<b2WheelJoint*>(m_world->CreateJoint(&jd));
 
 			jd.Initialize(m_car, m_wheel2, m_wheel2->GetPosition(), axis);
 			jd.motorSpeed = 0.0f;
@@ -236,7 +234,7 @@ public:
 			jd.lowerTranslation = -0.25f;
 			jd.upperTranslation = 0.25f;
 			jd.enableLimit = true;
-			m_spring2 = (b2WheelJoint*)m_world->CreateJoint(&jd);
+			m_spring2 = dynamic_cast<b2WheelJoint*>(m_world->CreateJoint(&jd));
 		}
 	}
 
@@ -281,4 +279,4 @@ public:
 	b2WheelJoint* m_spring2;
 };
 
-static int testIndex = RegisterTest("Examples", "Car", Car::Create);
+static int test_index = RegisterTest("Examples", "Car", Car::Create);

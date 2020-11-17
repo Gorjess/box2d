@@ -41,7 +41,7 @@ set (TESTBED_SOURCE_FILES
 	tests/gear_joint.cpp
 	tests/heavy1.cpp
 	tests/heavy2.cpp
-	tests/helloworld.cpp
+	tests/hello_world.cpp
 	tests/mobile_balanced.cpp
 	tests/mobile_unbalanced.cpp
 	tests/motor_joint.cpp
