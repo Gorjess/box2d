@@ -6,36 +6,49 @@ class hello_world final: public Test {
 
 public:
 	hello_world()
-	{							
+	{
+		m_world->SetGravity(b2Vec2(0.0f, 0.0f));
+		
 		// ground box
 		{			
 			b2BodyDef bd;
-			bd.position.Set(0.0f, -10.0f);
+			bd.position.Set(0.0f, 0.0f);
 			ground_body_ = m_world->CreateBody(&bd);
+			ground_body_->SetBullet(true);
 
-			b2PolygonShape ground_box;
-			ground_box.SetAsBox(50.0f, 10.0f);
-			ground_body_->CreateFixture(&ground_box, 0.0f);
+			// shape definition
+			b2PolygonShape polygon_shape;
+			polygon_shape.SetAsBox(5.0f, 5.0f);
+
+			auto create_barrier = [&](const b2Vec2& pos, const b2Vec2& center, const float& angle)
+			{
+				polygon_shape.SetAsBox(pos.x, pos.y, center, angle);
+				ground_body_->CreateFixture(&polygon_shape, 0.0f);
+			};
+
+			// walls
+			create_barrier(b2Vec2(20.0f, 1.0f), b2Vec2(0.0f, 0.0f), 0.0f);     // bottom
+			create_barrier(b2Vec2(20.0f, 1.0f), b2Vec2(0.0f, 40.0f), 0.0f);	// top
+			create_barrier(b2Vec2(1.0f, 20.0f), b2Vec2(-20.0f, 20.0f), 0.0f);	// left
+			create_barrier(b2Vec2(1.0f, 20.0f), b2Vec2(20.0f, 20.0f), 0.0f);	// right					
 		}		
 
 		// paddle
 		{
 			b2BodyDef bd;
 			bd.type = b2_dynamicBody;
-			bd.position.Set(0.0f, 0.0f);			
+			bd.position.Set(20.0f, 1.0f);
 			paddle_ = m_world->CreateBody(&bd);
 
-			b2PolygonShape ball_box;
-			ball_box.SetAsBox(4.0f, 1.0f);
-
-			/*b2CircleShape circle;
-			circle.m_radius = 1.5f;*/
+			b2PolygonShape paddle_box;
+			paddle_box.SetAsBox(4.0f, 1.0f, b2Vec2(4.0f, 1.0f), 0.0f);			
 
 			b2FixtureDef fd;
-			fd.shape = &ball_box;
+			fd.shape = &paddle_box;
 			fd.density = 1.0f;
-			fd.friction = 0.4f;
+
 			paddle_->CreateFixture(&fd);
+			paddle_->SetBullet(true);
 		}
 
 		// ball
@@ -50,9 +63,12 @@ public:
 
 			b2FixtureDef fd;
 			fd.shape = &circle;
-			fd.density = 1.0f;
-			fd.friction = 0.4f;
+			fd.density = 10.0f;			
+			fd.restitution = 1.0f;
 			ball_->CreateFixture(&fd);
+
+			ball_->SetBullet(true);
+			ball_->SetLinearVelocity(b2Vec2{ 10.0f, 10.0f });		
 		}
 	}
 
